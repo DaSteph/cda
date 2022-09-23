@@ -12,9 +12,9 @@
         <a-cursor></a-cursor>
     </a-camera>
 
-<!--    <a-assets>-->
-<!--        <video id="video-jooli" loop autoplay src="https://sdn-global-prog-cache-3qsdn.akamaized.net/stream/56715/files/22/09/22/6440349/1-XdPx4pntMfHT9rCRq3Jv.mp4"></video>-->
-<!--    </a-assets>-->
+    <a-assets>
+        <video id="video-jooli" crossOrigin="anonymous" src="https://sdn-global-prog-cache-3qsdn.akamaized.net/stream/56715/files/22/09/22/6440349/1-XdPx4pntMfHT9rCRq3Jv.mp4"></video>
+    </a-assets>
 
 </a-scene>
 <script>
@@ -24,6 +24,7 @@
     const roomLength = cubeSize*10;
 
     const videoUrl = 'https://sdn-global-prog-cache-3qsdn.akamaized.net/stream/56715/files/22/09/22/6440349/1-XdPx4pntMfHT9rCRq3Jv.mp4';
+    const videoSource = document.getElementById('video-jooli');
 
     const STATE_WATCHED='STATE_WATCHED';
     const STATE_ROAMING='STATE_ROAMING';
@@ -32,7 +33,13 @@
     const camera = document.getElementById('cam');
     let cubePlaying = null;
 
-    let video = null;
+    let video = document.createElement('a-video');
+    video.setAttribute('width', 1080*0.0004 * cubeSize);
+    video.setAttribute('height', 1980*0.0004 * cubeSize);
+    video.setAttribute('rotation', {x: 0, y: 0, z: 0});
+    video.setAttribute('position', {x: 0, y: 0, z: 0});
+    video.setAttribute("src", '#video-jooli');
+    scene.appendChild(video);
 
     // video.setAttribute("visible", false);
 
@@ -64,25 +71,15 @@
                 cubePlaying.rotSpeed = -(0.5 + Math.random());
             }
             cubePlaying = cube;
-            if (!!video){
-                video.play();
-            }
+            videoSource.play();
+            videoSource.currentTime=0;
+
         })
 
         scene.appendChild(cube);
         cubes.push(cube);
     }
 
-
-    setTimeout(() => {
-        video = document.createElement('a-video');
-        video.setAttribute('width', 1080*0.0004 * cubeSize);
-        video.setAttribute('height', 1980*0.0004 * cubeSize);
-        video.setAttribute('rotation', {x: 0, y: 0, z: 0});
-        video.setAttribute('position', {x: 0, y: 0, z: 0});
-        video.setAttribute("src", videoUrl);
-        scene.appendChild(video);
-    }, 1200);
 
     setInterval(myTimer, 40);
 
