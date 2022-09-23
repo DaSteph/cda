@@ -1,65 +1,139 @@
 <html>
 <head>
     <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.2.1/math.min.js" integrity="sha512-P/tfgnVm6RM6aQU1tpWKjDPF6otdDVURF8dlET8Icu5IHJ4261mE6tXhh9lumrRhIOCzzi8QpaPQ2urpY6sK8A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </head>
 <body>
 <a-scene id="scene">
-    <a-sky color="#000000"></a-sky>
+    <a-sky color="#333"></a-sky>
+
     <a-camera id="cam">
         <a-cursor></a-cursor>
     </a-camera>
+
+<!--    <a-assets>-->
+<!--        <video id="video-jooli" loop autoplay src="https://sdn-global-prog-cache-3qsdn.akamaized.net/stream/56715/files/22/09/22/6440349/1-XdPx4pntMfHT9rCRq3Jv.mp4"></video>-->
+<!--    </a-assets>-->
+
 </a-scene>
 <script>
-    const roomLength = 20;
-    const numberOfCubes = 20;
+    const numberOfCubes = 12;
     const cubes = [];
+    const cubeSize=2;
+    const roomLength = cubeSize*10;
+
+    const videoUrl = 'https://sdn-global-prog-cache-3qsdn.akamaized.net/stream/56715/files/22/09/22/6440349/1-XdPx4pntMfHT9rCRq3Jv.mp4';
+
+    const STATE_WATCHED='STATE_WATCHED';
+    const STATE_ROAMING='STATE_ROAMING';
 
     const scene = document.getElementById('scene');
+    const camera = document.getElementById('cam');
+    let cubePlaying = null;
+
+    let video = null;
+
+    // video.setAttribute("visible", false);
+
+    const speedTemplate = [0, cubeSize / 20];
+    let speedVector = speedTemplate;
 
     for (let i = 0; i<numberOfCubes; i++){
         const cube = document.createElement('a-box');
 
         const rotY = Math.floor((Math.random()*45));
         const posZ = Math.floor((Math.random()*2*roomLength)) - roomLength;
-        const posX = 2*(i - numberOfCubes + (0.5 * numberOfCubes));
-        const rotSpeed = 0.5 + Math.random();
+        const posX = Math.floor((Math.random()*2*roomLength)) - roomLength;
 
         cube.setAttribute('rotation', {x: 0, y: rotY, z: 0});
-        cube.setAttribute('position', {x: posX, y: 1, z: posZ});
+        cube.setAttribute('position', {x: posX, y: 1.5, z: posZ});
+        cube.setAttribute('width', cubeSize);
+        cube.setAttribute('height', cubeSize);
+        cube.setAttribute('depth', cubeSize);
         cube.setAttribute('color', "#937EF3");
-        cube.rotSpeed = rotSpeed;
+        cube.state=STATE_ROAMING;
+        cube.rotSpeed = -(0.5 + Math.random());
         cube.addEventListener('mouseenter', () => {
             cube.setAttribute('color', "#96E0DA");
-            console.log(document.getElementById('cam').getAttribute('rotation'));
+
+            const arc = camera.getAttribute('rotation').y;
+            speedVector = math.rotate(speedTemplate, -arc/180*math.pi);
+            cube.state=STATE_WATCHED;
+            cubePlaying = cube;
+
+            if (!video){
+
+            }
         })
         cube.addEventListener('mouseleave', () => {
-            cube.setAttribute('color', "#937EF3");
-        })
 
+        })
 
         scene.appendChild(cube);
         cubes.push(cube);
     }
 
 
+    setTimeout(() => {
+        video = document.createElement('a-video');
+        video.setAttribute('width', 1080*0.0004 * cubeSize);
+        video.setAttribute('height', 1980*0.0004 * cubeSize);
+        video.setAttribute('rotation', {x: 0, y: 0, z: 0});
+        video.setAttribute('position', {x: 0, y: 0, z: 0});
+        video.setAttribute("src", videoUrl);
+        scene.appendChild(video);
+    }, 1200);
+
     setInterval(myTimer, 40);
 
     function myTimer() {
+        camPos = camera.getAttribute('position');
+        camArc = (camera.getAttribute('rotation').y % 360 + 360) % 360;
         cubes.forEach(cube => {
-            const rot = cube.getAttribute('rotation');
-            cube.setAttribute('rotation', {x: rot.x, y: rot.y + cube.rotSpeed, z: rot.z});
+            const rot = {...cube.getAttribute('rotation')};
+            const pos = {...cube.getAttribute('position')};
 
-            const pos = cube.getAttribute('position');
-            if (pos.x > roomLength){
-                pos.x=-1 * roomLength;
+            let distance = 2*roomLength;
+            if (cubePlaying === cube){
+
+                distance = math.distance([camPos.x, camPos.z], [pos.x, pos.z]);
+
+                const viewerArc = camArc - rot.y + 360;
+                if (cube.rotSpeed !== 0 && viewerArc % 90 <= 45 && (viewerArc + cube.rotSpeed) % 90  > 45){
+                    cube.rotSpeed = 0;
+                }
+
             }
-            if (pos.y > roomLength){
-                pos.y=-1 * roomLength;
+            rot.y = (rot.y + cube.rotSpeed + 360) % 360;
+            cube.setAttribute('rotation', rot);
+            const vRot = {...rot};
+
+            if (cubePlaying === cube) {
+
+                offset = Math.floor(((camArc - rot.y + 45) % 360) / 90) * 90;
+
+                vRot.y += offset;
+
+                video.setAttribute('rotation', vRot);
             }
-            if (pos.z > roomLength){
-                pos.z=-1 * roomLength;
+
+            if (distance > 1.5 * cubeSize){
+                pos.x += speedVector[0];
+                pos.z += speedVector[1];
+
+                pos.x = ((pos.x+roomLength)%(2*roomLength)) - roomLength;
+                pos.z = ((pos.z+roomLength)%(2*roomLength)) - roomLength;
+
+                cube.setAttribute('position', pos);
+
             }
-            cube.setAttribute('position', {x: pos.x, y: pos.y, z: pos.z + 0.05});
+            if (cubePlaying === cube){
+                const vPos = {...pos};
+                const adjV = math.rotate([0, cubeSize / 2 + 0.01], -vRot.y/180*math.pi)
+                vPos.x += adjV[0];
+                vPos.z += adjV[1];
+                video.setAttribute('position', vPos);
+            }
         })
     }
 
