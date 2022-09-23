@@ -3,12 +3,66 @@
     <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
 </head>
 <body>
-<a-scene>
-    <a-box position="-1 0.5 -3" rotation="0 45 0" color="#4CC3D9"></a-box>
-    <a-sphere position="0 1.25 -5" radius="1.25" color="#EF2D5E"></a-sphere>
-    <a-cylinder position="1 0.75 -3" radius="0.5" height="1.5" color="#FFC65D"></a-cylinder>
-    <a-plane position="0 0 -4" rotation="-90 0 0" width="4" height="4" color="#7BC8A4"></a-plane>
-    <a-sky color="#ECECEC"></a-sky>
+<a-scene id="scene">
+    <a-sky color="#000000"></a-sky>
+    <a-camera id="cam">
+        <a-cursor></a-cursor>
+    </a-camera>
 </a-scene>
+<script>
+    const roomLength = 20;
+    const numberOfCubes = 20;
+    const cubes = [];
+
+    const scene = document.getElementById('scene');
+
+    for (let i = 0; i<numberOfCubes; i++){
+        const cube = document.createElement('a-box');
+
+        const rotY = Math.floor((Math.random()*45));
+        const posZ = Math.floor((Math.random()*2*roomLength)) - roomLength;
+        const posX = 2*(i - numberOfCubes + (0.5 * numberOfCubes));
+        const rotSpeed = 0.5 + Math.random();
+
+        cube.setAttribute('rotation', {x: 0, y: rotY, z: 0});
+        cube.setAttribute('position', {x: posX, y: 1, z: posZ});
+        cube.setAttribute('color', "#937EF3");
+        cube.rotSpeed = rotSpeed;
+        cube.addEventListener('mouseenter', () => {
+            cube.setAttribute('color', "#96E0DA");
+            console.log(document.getElementById('cam').getAttribute('rotation'));
+        })
+        cube.addEventListener('mouseleave', () => {
+            cube.setAttribute('color', "#937EF3");
+        })
+
+
+        scene.appendChild(cube);
+        cubes.push(cube);
+    }
+
+
+    setInterval(myTimer, 40);
+
+    function myTimer() {
+        cubes.forEach(cube => {
+            const rot = cube.getAttribute('rotation');
+            cube.setAttribute('rotation', {x: rot.x, y: rot.y + cube.rotSpeed, z: rot.z});
+
+            const pos = cube.getAttribute('position');
+            if (pos.x > roomLength){
+                pos.x=-1 * roomLength;
+            }
+            if (pos.y > roomLength){
+                pos.y=-1 * roomLength;
+            }
+            if (pos.z > roomLength){
+                pos.z=-1 * roomLength;
+            }
+            cube.setAttribute('position', {x: pos.x, y: pos.y, z: pos.z + 0.05});
+        })
+    }
+
+</script>
 </body>
 </html>
