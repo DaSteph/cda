@@ -60,14 +60,13 @@
             const arc = camera.getAttribute('rotation').y;
             speedVector = math.rotate(speedTemplate, -arc/180*math.pi);
             cube.state=STATE_WATCHED;
-            cubePlaying = cube;
-
-            if (!video){
-
+            if (!!cubePlaying && cubePlaying !== cube){
+                cubePlaying.rotSpeed = -(0.5 + Math.random());
             }
-        })
-        cube.addEventListener('mouseleave', () => {
-
+            cubePlaying = cube;
+            if (!!video){
+                video.play();
+            }
         })
 
         scene.appendChild(cube);
@@ -83,7 +82,7 @@
         video.setAttribute('position', {x: 0, y: 0, z: 0});
         video.setAttribute("src", videoUrl);
         scene.appendChild(video);
-    }, 3000);
+    }, 1200);
 
     setInterval(myTimer, 40);
 
