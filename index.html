@@ -62,17 +62,17 @@
         cube.state=STATE_ROAMING;
         cube.rotSpeed = -(0.5 + Math.random());
         cube.addEventListener('mouseenter', () => {
-            cube.setAttribute('color', "#96E0DA");
-
             const arc = camera.getAttribute('rotation').y;
             speedVector = math.rotate(speedTemplate, -arc/180*math.pi);
             cube.state=STATE_WATCHED;
             if (!!cubePlaying && cubePlaying !== cube){
                 cubePlaying.rotSpeed = -(0.5 + Math.random());
             }
+            if (cubePlaying !== cube){
+                videoSource.play();
+                videoSource.currentTime=0;
+            }
             cubePlaying = cube;
-            videoSource.play();
-            videoSource.currentTime=0;
 
         })
 
