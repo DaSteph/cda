@@ -2,6 +2,7 @@
 <head>
     <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.2.1/math.min.js" integrity="sha512-P/tfgnVm6RM6aQU1tpWKjDPF6otdDVURF8dlET8Icu5IHJ4261mE6tXhh9lumrRhIOCzzi8QpaPQ2urpY6sK8A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <meta name="apple-mobile-web-app-capable" content="yes">
 </head>
 <body>
 <a-scene id="scene">
@@ -82,7 +83,7 @@
         video.setAttribute('position', {x: 0, y: 0, z: 0});
         video.setAttribute("src", videoUrl);
         scene.appendChild(video);
-    }, 1200);
+    }, 3000);
 
     setInterval(myTimer, 40);
 
