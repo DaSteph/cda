@@ -6,22 +6,33 @@
 </head>
 <body>
 <a-scene id="scene">
-    <a-sky color="#333"></a-sky>
+    <a-sky src="#sky" rotation="0 -90 0"></a-sky>
 
     <a-camera id="cam">
         <a-cursor></a-cursor>
     </a-camera>
 
     <a-assets>
+        <img id="grid" src="https://img.gs/bbdkhfbzkk/stretch/https://i.imgur.com/25P1geh.png" crossorigin="anonymous">
+        <img id="sky" src="https://img.gs/bbdkhfbzkk/2048x2048,stretch/http://i.imgur.com/WqlqEkq.jpg" crossorigin="anonymous" />
+
         <video id="video-jooli" crossOrigin="anonymous" loop src="https://sdn-global-prog-cache-3qsdn.akamaized.net/stream/56715/files/22/09/22/6440349/1-XdPx4pntMfHT9rCRq3Jv.mp4"></video>
     </a-assets>
 
+    <a-entity
+            geometry="primitive: plane; width: 10000; height: 10000;" rotation="-90 0 0" position="0 -2 0"
+            material="src: #grid; repeat: 10000 10000; transparent: true;metalness:0.6; roughness: 0.4; sphericalEnvMap: #sky;"></a-entity>
+
+    <a-entity light="color: #937EF3; intensity: 1; type: ambient;" visible=""></a-entity>
+    <a-entity light="color: #EACCF8; intensity: 1" position="5 5 5"></a-entity>
+    <a-entity light="color: #96E0DA; intensity: 3" position="-5 5 15"></a-entity>
+
 </a-scene>
 <script>
-    const numberOfCubes = 12;
+    const numberOfCubes = 20;
     const cubes = [];
     const cubeSize=2;
-    const roomLength = cubeSize*10;
+    const roomLength = cubeSize*25;
 
     const videoSource = document.getElementById('video-jooli');
 
@@ -40,7 +51,7 @@
     video.setAttribute("src", '#video-jooli');
     scene.appendChild(video);
 
-    const speedTemplate = [0, cubeSize / 20];
+    const speedTemplate = [0, cubeSize / 10];
     let speedVector = speedTemplate;
 
     for (let i = 0; i<numberOfCubes; i++){
@@ -55,7 +66,7 @@
         cube.setAttribute('width', cubeSize);
         cube.setAttribute('height', cubeSize);
         cube.setAttribute('depth', cubeSize);
-        cube.setAttribute('color', "#937EF3");
+        cube.setAttribute('color', "#777777");
         cube.state=STATE_ROAMING;
         cube.rotSpeed = -(0.5 + Math.random());
         cube.addEventListener('mouseenter', () => {
@@ -115,8 +126,8 @@
                 pos.x += speedVector[0];
                 pos.z += speedVector[1];
 
-                pos.x = ((pos.x+roomLength)%(2*roomLength)) - roomLength;
-                pos.z = ((pos.z+roomLength)%(2*roomLength)) - roomLength;
+                pos.x += -2 * Math.trunc(pos.x / roomLength) * roomLength;
+                pos.z += -2 * Math.trunc(pos.z / roomLength) * roomLength;
 
                 cube.setAttribute('position', pos);
 
