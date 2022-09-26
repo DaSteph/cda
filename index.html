@@ -31,7 +31,8 @@
 <script>
     const cubes = [];
     const cubeSize=2;
-    const roomLength = cubeSize*25;
+    const roomLength = cubeSize * 25;
+    const viewDistance = 1.5 * cubeSize;
 
     const videoAssets = document.getElementById('assets');
 
@@ -2818,10 +2819,12 @@
             const rot = {...cube.getAttribute('rotation')};
             const pos = {...cube.getAttribute('position')};
 
+            let speedFactor = 1.0;
             let distance = 2 * roomLength;
             if (cubePlaying === cube){
 
                 distance = math.distance([camPos.x, camPos.z], [pos.x, pos.z]);
+                speedFactor = Math.trunc(distance / (2 * viewDistance)) + 1;
 
                 const viewerArc = camArc - rot.y + 360;
                 if (cube.rotSpeed !== 0 && viewerArc % 90 <= 45 && (viewerArc + cube.rotSpeed) % 90  > 45){
@@ -2832,9 +2835,9 @@
             rot.y = (rot.y + cube.rotSpeed + 360) % 360;
             cube.setAttribute('rotation', rot);
 
-            if (distance > 1.5 * cubeSize){
-                pos.x += speedVector[0];
-                pos.z += speedVector[1];
+            if (distance > viewDistance){
+                pos.x += speedFactor * speedVector[0];
+                pos.z += speedFactor * speedVector[1];
 
                 pos.x += -2 * Math.trunc(pos.x / roomLength) * roomLength;
                 pos.z += -2 * Math.trunc(pos.z / roomLength) * roomLength;
