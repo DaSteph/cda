@@ -2738,7 +2738,6 @@
     ],
     };
 
-
     feed.feedItems.forEach(feedItem => {
         const videoSource = document.createElement('video');
         videoSource.setAttribute("id", feedItem.key);
@@ -2787,43 +2786,26 @@
         scene.appendChild(cube);
         cubes.push(cube);
 
-        const imageFront = document.createElement('a-image');
-        imageFront.setAttribute('src', '#preview-' + feedItem.key);
-        imageFront.setAttribute('rotation', {x: 0, y: 0, z: 0});
-        imageFront.setAttribute('position', {x: 0, y: 0, z: cubeSize / 2 + 0.01});
-        imageFront.setAttribute('width', 1080*0.0004 * cubeSize);
-        imageFront.setAttribute('height', 1980*0.0004 * cubeSize);
-        cube.rear = imageFront;
-        cube.appendChild(imageFront);
-
-        const imageRear = document.createElement('a-image');
-        imageRear.setAttribute('src', '#preview-' + feedItem.key);
-        imageRear.setAttribute('rotation', {x: 0, y: 0, z: 0});
-        imageRear.setAttribute('position', {x: 0, y: 0, z: -1 * (cubeSize / 2 + 0.01)});
-        imageRear.setAttribute('width', 1080*0.0004 * cubeSize);
-        imageRear.setAttribute('height', 1980*0.0004 * cubeSize);
-        cube.front = imageRear;
-        cube.appendChild(imageRear);
-
-        const imageLeft = document.createElement('a-image');
-        imageLeft.setAttribute('src', '#preview-' + feedItem.key);
-        imageLeft.setAttribute('rotation', {x: 0, y: 90, z: 0});
-        imageLeft.setAttribute('position', {x: cubeSize / 2 + 0.01, y: 0, z: 0});
-        imageLeft.setAttribute('width', 1080*0.0004 * cubeSize);
-        imageLeft.setAttribute('height', 1980*0.0004 * cubeSize);
-        cube.front = imageLeft;
-        cube.appendChild(imageLeft);
-
-        const imageRight = document.createElement('a-image');
-        imageRight.setAttribute('src', '#preview-' + feedItem.key);
-        imageRight.setAttribute('rotation', {x: 0, y: 270, z: 0});
-        imageRight.setAttribute('position', {x: -1 * (cubeSize / 2 + 0.01), y: 0, z: 0});
-        imageRight.setAttribute('width', 1080*0.0004 * cubeSize);
-        imageRight.setAttribute('height', 1980*0.0004 * cubeSize);
-        cube.front = imageRight;
-        cube.appendChild(imageRight);
-
+        cube.images = [];
+        cube.images.push(createMedia('a-image', 0, 0, 1, '#preview-' + feedItem.key));
+        cube.images.push(createMedia('a-image', 180, 0, -1, '#preview-' + feedItem.key));
+        cube.images.push(createMedia('a-image', 90, 1, 0, '#preview-' + feedItem.key));
+        cube.images.push(createMedia('a-image', 270, -1, 0, '#preview-' + feedItem.key));
+        cube.images.forEach(el => (cube.appendChild(el)));
     })
+
+    function createMedia(type, yRot, xPosFactor, zPosFactor, src)
+    {
+        const el = document.createElement(type);
+        el.setAttribute('rotation', {x: 0, y: yRot, z: 0});
+        el.setAttribute('position', {x: xPosFactor * (cubeSize / 2 + 0.01), y: 0, z: zPosFactor * (cubeSize / 2 + 0.01)});
+        el.setAttribute('width', 1080*0.0004 * cubeSize);
+        el.setAttribute('height', 1980*0.0004 * cubeSize);
+        if (!!src){
+            el.setAttribute('src', src);
+        }
+        return el;
+    }
 
     setInterval(myTimer, 40);
 
