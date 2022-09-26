@@ -2747,6 +2747,12 @@
         videoSource.setAttribute("src", feedItem.video.videoItems.find(el => el.streamType === 'mp4_medium').url);
         videoAssets.appendChild(videoSource);
 
+        const videoPreview = document.createElement('img');
+        videoPreview.setAttribute("id", 'preview-' + feedItem.key);
+        videoPreview.setAttribute("crossOrigin", "anonymous");
+        videoPreview.setAttribute("src", feedItem.video.videoPreviews.find(el => el.size === 'large').uri);
+        videoAssets.appendChild(videoPreview);
+
         const cube = document.createElement('a-box');
 
         const rotY = Math.floor((Math.random()*45));
@@ -2762,6 +2768,7 @@
         cube.state=STATE_ROAMING;
         cube.rotSpeed = -(0.5 + Math.random());
         cube.videoSource = videoSource;
+        cube.videoPreview = videoPreview;
         cube.addEventListener('mouseenter', () => {
             const arc = camera.getAttribute('rotation').y;
             speedVector = math.rotate(speedTemplate, -arc/180*math.pi);
@@ -2776,11 +2783,45 @@
                 cube.videoSource.currentTime=0;
             }
             cubePlaying = cube;
-
         })
-
         scene.appendChild(cube);
         cubes.push(cube);
+
+        const imageFront = document.createElement('a-image');
+        imageFront.setAttribute('src', '#preview-' + feedItem.key);
+        imageFront.setAttribute('rotation', {x: 0, y: 0, z: 0});
+        imageFront.setAttribute('position', {x: 0, y: 0, z: cubeSize / 2 + 0.01});
+        imageFront.setAttribute('width', 1080*0.0004 * cubeSize);
+        imageFront.setAttribute('height', 1980*0.0004 * cubeSize);
+        cube.rear = imageFront;
+        cube.appendChild(imageFront);
+
+        const imageRear = document.createElement('a-image');
+        imageRear.setAttribute('src', '#preview-' + feedItem.key);
+        imageRear.setAttribute('rotation', {x: 0, y: 0, z: 0});
+        imageRear.setAttribute('position', {x: 0, y: 0, z: -1 * (cubeSize / 2 + 0.01)});
+        imageRear.setAttribute('width', 1080*0.0004 * cubeSize);
+        imageRear.setAttribute('height', 1980*0.0004 * cubeSize);
+        cube.front = imageRear;
+        cube.appendChild(imageRear);
+
+        const imageLeft = document.createElement('a-image');
+        imageLeft.setAttribute('src', '#preview-' + feedItem.key);
+        imageLeft.setAttribute('rotation', {x: 0, y: 90, z: 0});
+        imageLeft.setAttribute('position', {x: cubeSize / 2 + 0.01, y: 0, z: 0});
+        imageLeft.setAttribute('width', 1080*0.0004 * cubeSize);
+        imageLeft.setAttribute('height', 1980*0.0004 * cubeSize);
+        cube.front = imageLeft;
+        cube.appendChild(imageLeft);
+
+        const imageRight = document.createElement('a-image');
+        imageRight.setAttribute('src', '#preview-' + feedItem.key);
+        imageRight.setAttribute('rotation', {x: 0, y: 270, z: 0});
+        imageRight.setAttribute('position', {x: -1 * (cubeSize / 2 + 0.01), y: 0, z: 0});
+        imageRight.setAttribute('width', 1080*0.0004 * cubeSize);
+        imageRight.setAttribute('height', 1980*0.0004 * cubeSize);
+        cube.front = imageRight;
+        cube.appendChild(imageRight);
 
     })
 
@@ -2829,7 +2870,7 @@
             }
             if (cubePlaying === cube){
                 const vPos = {...pos};
-                const adjV = math.rotate([0, cubeSize / 2 + 0.01], -vRot.y/180*math.pi)
+                const adjV = math.rotate([0, cubeSize / 2 + 0.011], -vRot.y/180*math.pi)
                 vPos.x += adjV[0];
                 vPos.z += adjV[1];
                 video.setAttribute('position', vPos);
