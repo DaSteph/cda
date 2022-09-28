@@ -15,8 +15,6 @@
     <a-assets id="assets">
         <img id="grid" src="https://img.gs/bbdkhfbzkk/stretch/https://i.imgur.com/25P1geh.png" crossorigin="anonymous">
         <img id="sky" src="https://img.gs/bbdkhfbzkk/2048x2048,stretch/http://i.imgur.com/WqlqEkq.jpg" crossorigin="anonymous" />
-
-        <video id="video-jooli" crossOrigin="anonymous" loop src="https://sdn-global-prog-cache-3qsdn.akamaized.net/stream/56715/files/22/09/22/6440349/1-XdPx4pntMfHT9rCRq3Jv.mp4"></video>
     </a-assets>
 
     <a-entity
@@ -2737,7 +2735,7 @@
         videoSource.setAttribute("id", feedItem.key);
         videoSource.setAttribute("crossOrigin", "anonymous");
         videoSource.setAttribute("loop", true);
-        videoSource.setAttribute("src", feedItem.video.videoItems.find(el => el.streamType === 'mp4_medium').url);
+        videoSource.setAttribute("src", feedItem.video.videoItems.find(el => el.streamType === 'mp4_high').url);
         videoAssets.appendChild(videoSource);
 
         const videoPreview = document.createElement('img');
