@@ -1,0 +1,25 @@
+<html>
+<head>
+    <title>aframe-chromakey-material example</title>
+    <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
+    <script src="https://unpkg.com/aframe-chromakey-material/dist/aframe-chromakey-material.min.js"></script>
+</head>
+
+<body>
+<video style="opacity: 0;" id="greenscreenvideo" src="./example.mp4" loop autoplay muted></video>
+<a-scene>
+
+    <a-box position="-1 0.5 -3" rotation="0 45 0" color="#4CC3D9"></a-box>
+    <a-sphere position="0 1.25 -5" radius="1.25" color="#EF2D5E"></a-sphere>
+    <a-cylinder position="1 0.75 -3" radius="0.5" height="1.5" color="#FFC65D"></a-cylinder>
+    <a-plane position="0 0 -4" rotation="-90 0 0" width="4" height="4" color="#7BC8A4"></a-plane>
+    <a-sky color="#ECECEC"></a-sky>
+
+    <a-video
+            material="shader: chromakey; src: #greenscreenvideo; color: 0.1 0.9 0.2"
+            position="-0.5 1 -3.5"
+            scale="1.5 3 1.5"
+    ></a-video>
+</a-scene>
+</body>
+</html>
