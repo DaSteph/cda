@@ -1,0 +1,68 @@
+<html>
+<head>
+    <title>aframe-chromakey-material example</title>
+    <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
+    <script src="https://unpkg.com/aframe-chromakey-material/dist/aframe-chromakey-material.min.js"></script>
+    <!--    <script src="https://unpkg.com/aframe-camera-events@1.0.0/index.js"></script>-->
+</head>
+
+<body>
+<a-scene id="scene">
+
+    <a-camera id="cam"></a-camera>
+    <a-entity laser-controls="hand: right"></a-entity>
+    <a-entity cursor="rayOrigin: mouse"></a-entity>
+
+    <a-box id="couch-mid" position="0 0.25 0" rotation="0 0 0" width="2.5" height="0.5" depth="1" color="#4CC3D9">
+        <a-box position="-1.5 0.25 0" rotation="0 0 0" width="0.5" height="1" depth="1" color="#4CC3E9"></a-box>
+        <a-box position="1.5 0.25 0" rotation="0 0 0" width="0.5" height="1" depth="1" color="#4CC3E9"></a-box>
+        <a-box position="0 0.25 0.75" rotation="0 0 0" width="3.5" height="1" depth="0.5" color="#4CC3E9"></a-box>
+    </a-box>
+
+    <a-box id="couch-right" position="3.5 0.25 -1" rotation="0 45 0" width="1.5" height="0.5" depth="1" color="#FFC65D">
+        <a-box position="-1 0.25 0" rotation="0 0 0" width="0.5" height="1" depth="1" color="#FFC65D"></a-box>
+        <a-box position="1 0.25 0" rotation="0 0 0" width="0.5" height="1" depth="1" color="#FFC65D"></a-box>
+        <a-box position="0 0.25 0.75" rotation="0 0 0" width="2.5" height="1" depth="0.5" color="#FFC65D"></a-box>
+    </a-box>
+
+    <a-box id="couch-left" position="-3.5 0.25 -1" rotation="0 -45 0" width="1.5" height="0.5" depth="1" color="#EF2D5E">
+        <a-box position="-1 0.25 0" rotation="0 0 0" width="0.5" height="1" depth="1" color="#EF2D5E"></a-box>
+        <a-box position="1 0.25 0" rotation="0 0 0" width="0.5" height="1" depth="1" color="#EF2D5E"></a-box>
+        <a-box position="0 0.25 0.75" rotation="0 0 0" width="2.5" height="1" depth="0.5" color="#EF2D5E"></a-box>
+    </a-box>
+
+    <a-plane position="0 0 -4" rotation="-90 0 0" width="30" height="30" color="#AAFFCC"></a-plane>
+    <a-sky color="#000000"></a-sky>
+
+</a-scene>
+<video id="greenscreenvideo" src="../example.mp4" loop autoPlay muted></video>
+<script>
+    const scene = document.getElementById('scene');
+    const videoAsset = document.getElementById('greenscreenvideo');
+    const camera = document.getElementById('cam');
+
+    const video = document.createElement('a-video');
+    video.setAttribute('position', '-0.5 1 -3.5');
+    video.setAttribute('scale', '1.5 3 1.5');
+    video.setAttribute('material', 'shader: chromakey; src: #greenscreenvideo; color: 0.1 0.9 0.2');
+    scene.appendChild(video);
+
+    videoAsset.play();
+
+    function onClick(el) {
+        const couch = el.target.parentElement.tagName === 'A-BOX' ? el.target.parentElement : el.target;
+        const rot = {...couch.getAttribute('rotation')};
+        video.setAttribute('rotation', rot);
+        const pos = {...couch.getAttribute('position')};
+        pos.y += 1.6;
+        camera.setAttribute('position', pos);
+    }
+
+    document.getElementById('couch-right').addEventListener('click', onClick);
+    document.getElementById('couch-left').addEventListener('click', onClick);
+    document.getElementById('couch-mid').addEventListener('click', onClick);
+
+</script>
+
+</body>
+</html>
