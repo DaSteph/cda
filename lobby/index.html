@@ -7,9 +7,10 @@
 </head>
 
 <body>
-<a-scene id="scene" antialias="true" cursor="rayOrigin:mouse">
+<a-scene id="scene">
 
     <a-camera id="cam"></a-camera>
+    <a-entity cursor="rayOrigin:mouse"></a-entity>
     <a-entity laser-controls="hand: right"></a-entity>
 
     <a-box id="couch-mid" position="0 0.25 0" rotation="0 0 0" width="2.5" height="0.5" depth="1" color="#4CC3D9">
@@ -57,9 +58,9 @@
         camera.setAttribute('position', pos);
     }
 
-    document.getElementById('couch-right').addEventListener('triggerdown', onClick);
-    document.getElementById('couch-left').addEventListener('triggerdown', onClick);
-    document.getElementById('couch-mid').addEventListener('triggerdown', onClick);
+    document.getElementById('couch-right').addEventListener('click', onClick);
+    document.getElementById('couch-left').addEventListener('click', onClick);
+    document.getElementById('couch-mid').addEventListener('click', onClick);
 
 </script>
 
