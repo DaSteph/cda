@@ -7,11 +7,10 @@
 </head>
 
 <body>
-<a-scene id="scene">
+<a-scene id="scene" antialias="true" cursor="rayOrigin:mouse">
 
     <a-camera id="cam"></a-camera>
-    <a-entity oculus-touch-controls="hand: left"></a-entity>
-    <a-entity oculus-touch-controls="hand: right"></a-entity>
+    <a-entity laser-controls="hand: right"></a-entity>
 
     <a-box id="couch-mid" position="0 0.25 0" rotation="0 0 0" width="2.5" height="0.5" depth="1" color="#4CC3D9">
         <a-box position="-1.5 0.25 0" rotation="0 0 0" width="0.5" height="1" depth="1" color="#4CC3E9"></a-box>
