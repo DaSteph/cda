@@ -9,9 +9,11 @@
 <body>
 <a-scene id="scene">
 
-    <a-camera id="cam"></a-camera>
-    <a-entity cursor="rayOrigin:mouse"></a-entity>
-    <a-entity laser-controls="hand: right"></a-entity>
+    <a-entity id="cam" position="0 0 0">
+        <a-camera></a-camera>
+        <a-entity cursor="rayOrigin:mouse"></a-entity>
+        <a-entity laser-controls="hand: right"></a-entity>
+    </a-entity>
 
     <a-box id="couch-mid" position="0 0.25 0" rotation="0 0 0" width="2.5" height="0.5" depth="1" color="#4CC3D9">
         <a-box position="-1.5 0.25 0" rotation="0 0 0" width="0.5" height="1" depth="1" color="#4CC3E9"></a-box>
@@ -54,8 +56,8 @@
         const rot = {...couch.getAttribute('rotation')};
         video.setAttribute('rotation', rot);
         const pos = {...couch.getAttribute('position')};
-        pos.y += 1.6;
         camera.setAttribute('position', pos);
+        camera.setAttribute('rotation', rot);
     }
 
     document.getElementById('couch-right').addEventListener('click', onClick);
